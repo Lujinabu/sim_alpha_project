@@ -1,0 +1,14 @@
+/run/numberOfThreads 12
+/run/initialize
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/centre 0 0 0 um
+/gps/pos/halfx 0.1 um
+/gps/pos/halfy 0.1 um
+/gps/pos/halfz 0.1 um
+/gps/particle ion
+/gps/ion 88 224 0 0
+/gps/ene/type Mono
+/gps/energy 0 MeV
+/run/printProgress 1
+/run/beamOn 10
