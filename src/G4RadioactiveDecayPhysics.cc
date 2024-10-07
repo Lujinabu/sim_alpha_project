@@ -28,7 +28,7 @@
 
 #include "G4RadioactiveDecayPhysics.hh"
 
-#include "../include/G4RadioactiveDecay.hh"
+#include "G4RadioactiveDecay.hh"
 #include "G4GenericIon.hh"
 #include "globals.hh"
 #include "G4PhysicsListHelper.hh"

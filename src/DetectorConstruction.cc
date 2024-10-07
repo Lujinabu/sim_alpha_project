@@ -1,4 +1,4 @@
-#include "../include/DetectorConstruction.hh"
+#include "DetectorConstruction.hh"
 
 MyDetectorConstruction::MyDetectorConstruction() {
     // Define dimensions (half-lengths)

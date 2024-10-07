@@ -1,4 +1,4 @@
-#include "../include/StackingAction.hh"
+#include "StackingAction.hh"
 #include "G4Track.hh"
 #include "G4NeutrinoE.hh"
 

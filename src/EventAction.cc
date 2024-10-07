@@ -1,4 +1,4 @@
-#include "../include/EventAction.hh"
+#include "EventAction.hh"
 #include "G4RunManager.hh"
 #include "G4Event.hh"
 

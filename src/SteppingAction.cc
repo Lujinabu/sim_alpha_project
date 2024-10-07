@@ -1,4 +1,4 @@
-#include "../include/SteppingAction.hh"
+#include "SteppingAction.hh"
 #include "G4LogicalVolume.hh"
 #include "G4EventManager.hh"
 #include "G4AnalysisManager.hh"
@@ -160,7 +160,6 @@ MySteppingAction::~MySteppingAction(){}
                    }
 
         //   G4cout << "Event: " << eventID << " Particle: " << particleName << " Parent: " << parentParticleName << G4endl;
-                
 	
 		G4int tempID=aStep->GetTrack()->GetTrackID();
 		//G4cout<<G4endl;
@@ -187,7 +186,7 @@ MySteppingAction::~MySteppingAction(){}
 	          man->FillNtupleDColumn(0, 15, particleMomDirection[2]);
 
 
-            // man->FillNtupleDColumn(0, 12, angle); // Angle between initial and final momentum directions
+            // // man->FillNtupleDColumn(0, 12, angle); // Angle between initial and final momentum directions
             man->AddNtupleRow(0);
 
 

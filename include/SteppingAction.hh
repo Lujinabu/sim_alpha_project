@@ -3,7 +3,7 @@
 
 #include "G4UserSteppingAction.hh"
 #include "G4Step.hh"
-#include "../include/EventAction.hh"
+#include "EventAction.hh"
 #include <map>
 #include <set>
 

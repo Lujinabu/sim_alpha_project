@@ -1,7 +1,6 @@
-#include "G4RunManager.hh"
+#include "G4RunManagerFactory.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
-#include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
@@ -14,7 +13,8 @@ int main(int argc, char** argv)
 {
       G4UIExecutive* ui = nullptr;
   if ( argc == 1 ) { ui = new G4UIExecutive(argc, argv); }
-    G4RunManager* runManager = new G4RunManager();
+    std::unique_ptr<G4RunManager> runManager(G4RunManagerFactory::CreateRunManager());
+    runManager->SetNumberOfThreads(1); // by default
     
     runManager->SetUserInitialization(new MyDetectorConstruction());
     runManager->SetUserInitialization(new MyPhysicsList());
@@ -49,7 +49,6 @@ int main(int argc, char** argv)
   
 
   delete visManager;
-  delete runManager;
 
 
     return 0;

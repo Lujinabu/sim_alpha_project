@@ -36,7 +36,7 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "../include/G4RadioactiveDecay.hh"
+#include "G4RadioactiveDecay.hh"
 #include "G4RadioactiveDecayMessenger.hh"
 
 #include "G4SystemOfUnits.hh"
@@ -98,7 +98,7 @@ const G4ThreeVector G4RadioactiveDecay::origin(0., 0., 0.);
 
 #ifdef G4MULTITHREADED
 #include "G4AutoLock.hh"
-#include "../include/G4RadioactiveDecay.hh"
+#include "G4RadioactiveDecay.hh"
 G4Mutex G4RadioactiveDecay::radioactiveDecayMutex = G4MUTEX_INITIALIZER;
 DecayTableMap *G4RadioactiveDecay::master_dkmap = 0;
 

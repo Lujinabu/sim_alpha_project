@@ -1,4 +1,4 @@
-#include "../include/TrackInformation.hh"
+#include "TrackInformation.hh"
 
 
 MyTrackInformation::MyTrackInformation(const G4Track* aTrack)

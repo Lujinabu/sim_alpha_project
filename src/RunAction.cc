@@ -1,9 +1,17 @@
-#include "../include/RunAction.hh"
+#include "RunAction.hh"
 #include "G4ios.hh"
-#include "../include/DetectorConstruction.hh"
-#include "../include/EventAction.hh"
+#include "DetectorConstruction.hh"
+#include "EventAction.hh"
 
-MyRunAction::MyRunAction() {}
+MyRunAction::MyRunAction() {
+
+  G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
+  analysisManager->SetDefaultFileType("root");
+  analysisManager->SetVerboseLevel(0);
+  analysisManager->SetNtupleMerging(true);
+  analysisManager->SetFirstNtupleId(0);
+
+}
 MyRunAction::~MyRunAction() {}
 
 void MyRunAction::BeginOfRunAction(const G4Run*) {

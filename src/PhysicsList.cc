@@ -1,4 +1,4 @@
-#include "../include/PhysicsList.hh"
+#include "PhysicsList.hh"
 
 MyPhysicsList::MyPhysicsList(){
 
