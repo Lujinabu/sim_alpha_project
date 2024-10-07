@@ -173,22 +173,18 @@ MySteppingAction::~MySteppingAction(){}
 	          man->FillNtupleDColumn(0, 1, prekineticEnergy/keV);//particle kinetic energy in a given step, in keV
 	          man->FillNtupleDColumn(0, 2, postkineticEnergy/keV);//particle kinetic energy in a given step, in keV
 	          man->FillNtupleIColumn(0, 3, particleID);//particle ID
-            man->FillNtupleSColumn(0, 4, particleName); // step number, step ID
-	          man->FillNtupleIColumn(0, 5, stepID);//particle name
-           	man->FillNtupleDColumn(0, 6, prePoint[0]/nm);//pre step point of the particle 
-           	man->FillNtupleDColumn(0, 7, prePoint[1]/nm);
-           	man->FillNtupleDColumn(0, 8, prePoint[2]/nm);
-           	man->FillNtupleDColumn(0, 9, postPoint[0]/nm);//post step point of the particle
-           	man->FillNtupleDColumn(0, 10, postPoint[1]/nm);
-           	man->FillNtupleDColumn(0, 11, postPoint[2]/nm);
-            man->FillNtupleIColumn(0, 12, parentParticleID); // travel distance of the particle
-            man->FillNtupleSColumn(0, 13, parentParticleName); // step number, step ID
-            man->FillNtupleDColumn(0, 14, angle);
-	          man->FillNtupleDColumn(0, 15, dE/eV);
-	          man->FillNtupleDColumn(0, 16, stepLength/nm);//step length in nm
-            man->FillNtupleDColumn(0, 17, particleMomDirection[0]);//post momentum direction of the particle
-	          man->FillNtupleDColumn(0, 18, particleMomDirection[1]);
-	          man->FillNtupleDColumn(0, 19, particleMomDirection[2]);
+	          man->FillNtupleIColumn(0, 4, stepID);//particle name
+           	man->FillNtupleDColumn(0, 5, prePoint[0]/nm);//pre step point of the particle 
+           	man->FillNtupleDColumn(0, 6, prePoint[1]/nm);
+           	man->FillNtupleDColumn(0, 7, prePoint[2]/nm);
+           	man->FillNtupleDColumn(0, 8, postPoint[0]/nm);//post step point of the particle
+           	man->FillNtupleDColumn(0, 9, postPoint[1]/nm);
+           	man->FillNtupleDColumn(0, 10, postPoint[2]/nm);
+            man->FillNtupleIColumn(0, 11, parentParticleID); // travel distance of the particle
+	          man->FillNtupleDColumn(0, 12, stepLength/nm);//step length in nm
+            man->FillNtupleDColumn(0, 13, particleMomDirection[0]);//post momentum direction of the particle
+	          man->FillNtupleDColumn(0, 14, particleMomDirection[1]);
+	          man->FillNtupleDColumn(0, 15, particleMomDirection[2]);
 
 
             // man->FillNtupleDColumn(0, 12, angle); // Angle between initial and final momentum directions

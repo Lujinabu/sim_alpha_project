@@ -7,7 +7,9 @@ project(Rn220_ICE)
 find_package(Geant4 REQUIRED ui_all vis_all)
 # Include Geant4 directories
 include(${Geant4_USE_FILE})
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/include
+                    ${Geant4_INCLUDE_DIR})
+
 
 # Gather sources and headers
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)

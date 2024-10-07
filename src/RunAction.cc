@@ -14,26 +14,22 @@ void MyRunAction::BeginOfRunAction(const G4Run*) {
 
     // Create Ntuple for "UperTissue"
     man->CreateNtuple("Uper&underTissue", "Depth");
-    man->CreateNtupleIColumn("Event");//1
-    man->CreateNtupleDColumn("prekineticEnergy");
+    man->CreateNtupleIColumn("Event");//0
+    man->CreateNtupleDColumn("prekineticEnergy");//1
     man->CreateNtupleDColumn("postkineticEnergy");//2
     man->CreateNtupleIColumn("particleID");//3
-    man->CreateNtupleSColumn("particleName");//4
-    man->CreateNtupleIColumn("stepID");//5
-    man->CreateNtupleDColumn("prePoint_x_nm");//6  // Corrected column names
-    man->CreateNtupleDColumn("prePoint_y_nm");//7
-    man->CreateNtupleDColumn("prePoint_z_nm");//8
-    man->CreateNtupleDColumn("postPoint_x_nm");//9
-    man->CreateNtupleDColumn("postPoint_y_nm");//10
-    man->CreateNtupleDColumn("postPoint_z_nm");//11
-    man->CreateNtupleIColumn("parentParticleID");//12
-    man->CreateNtupleSColumn("parentparticleName");//13
-    man->CreateNtupleDColumn("Angle");//14
-    man->CreateNtupleDColumn("eDep_eV");
-	man->CreateNtupleDColumn(0, 16, stepLength/nm);//step length in nm
-    man->CreateNtupleDColumn(0, 17, particleMomDirection[0]);//post momentum direction of the particle
-	man->CreateNtupleDColumn(0, 18, particleMomDirection[1]);
-	man->CreateNtupleDColumn(0, 19, particleMomDirection[2]);
+    man->CreateNtupleIColumn("stepID");//4
+    man->CreateNtupleDColumn("prePoint_x_nm");//5  // Corrected column names
+    man->CreateNtupleDColumn("prePoint_y_nm");//6
+    man->CreateNtupleDColumn("prePoint_z_nm");//7
+    man->CreateNtupleDColumn("postPoint_x_nm");//8
+    man->CreateNtupleDColumn("postPoint_y_nm");//9
+    man->CreateNtupleDColumn("postPoint_z_nm");//10
+    man->CreateNtupleIColumn("parentParticleID");//11
+    man->CreateNtupleDColumn("stepLength/nm");//12
+    man->CreateNtupleDColumn("particleMomDirection_X");//13//post momentum direction of the particle
+	man->CreateNtupleDColumn("particleMomDirection_Y");//14
+	man->CreateNtupleDColumn("particleMomDirection_Z");//15
 
 
     man->FinishNtuple(0);
