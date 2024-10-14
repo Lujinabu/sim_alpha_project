@@ -1,20 +1,40 @@
 #include "DetectorConstruction.hh"
 
+// using namespace std;
+// using CLHEP::angstrom;
+// using CLHEP::degree;
+// using CLHEP::micrometer;
+// using CLHEP::mm;
+// using CLHEP::nanometer;
+
+
 MyDetectorConstruction::MyDetectorConstruction() {
     // Define dimensions (half-lengths)
-    xWorld = 200*um;
-    yWorld = 300*um;
-    zWorld = 200*um;
+    xWorld = 100*um;
+    yWorld = 100*um;
+    zWorld = 100*um;
 
-    xIce = 180*um;
-    yIce = 180*um;
-    zIce = 180*um;
+    xIce = 20*um;
+    yIce = 10*um;
+    zIce = 20*um;
 
     xTissue=80*um;
-	yTissue=1*um;
+	yTissue=80*um;
 	zTissue=80*um;
 
-    xVoxel = 1*um; // it was xVoxel and i changet to Voxel but there no differant 
+    xcell=80*um;
+    ycell=0.3*um;
+    zcell=80*um;
+
+    Voxel = 300*nm; 
+    margin = 0*nm;
+    // Voxel = 1*um;  
+
+
+
+
+//   fDetectorMessenger = new DetectorMessenger(this);
+
 
     DefineMaterials();
 }
@@ -51,34 +71,62 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     solidUnderTissue = new G4Box("solidUnderTissue", xTissue, yTissue, zTissue);
     logicUnderTissue = new G4LogicalVolume(solidUnderTissue, skinMat, "logicUnderTissue");
     physUnderTissue = new G4PVPlacement(0, G4ThreeVector(0, -yIce-yTissue, 0), logicUnderTissue, "physUnderTissue", logicWorld, false, 0, 1);
-
+    //this mean the center of the physUnderTissue will be (0,-90,0)for the world , but when I mad the logicUnderTissue a mother for a valum 
+    //the center for it will be 0,0,0 then i can desaedie what the center of the new value acording to the logicUnderTissue.  
+    G4cout << "yIce-yTissue " << yIce-yTissue << G4endl; // Debugging output
     // Ice block volume
     solidIce = new G4Box("solidIce", xIce, yIce, zIce);
     logicIce = new G4LogicalVolume(solidIce, iceMat, "logicIce");
     physIce = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), logicIce, "physIce", logicWorld, false, 0, true);
 
+    // Set user limits for the ice block
 
-    G4int xN=xTissue/xVoxel;
-	G4int yN=yTissue/xVoxel;
-	G4int zN=zTissue/xVoxel;
+     G4double maxStep = 0.01*Voxel;
+     auto fStepLimit = new G4UserLimits(maxStep);// it will be 3nm for each step 
+  
+    solidCellUnder = new G4Box("solidCellUnder", xcell, ycell, zcell);
+    logicCellUnder = new G4LogicalVolume(solidCellUnder, skinMat, "logicCellUnder");
 
-    G4int xI=xIce/xVoxel;
-	G4int yI=yIce/xVoxel;
-	G4int zI=zIce/xVoxel;
+    // Place the under cells
+    for (G4int i = 0; i < 10; ++i) {
+        G4double yOffset = -(i + 1) * 5 * um + yTissue;  // Adjust offset to place within Under Tissue
+        physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i+1, true);
+        // G4cout << " -(i + 1) * 5 * um + yTissue: " <<  -(i + 1) * 5 * um + yTissue << G4endl;  
+    }
+
+    // Upper cells
+    solidCellUper = new G4Box("solidCellUper", xcell, ycell, zcell);
+    logicCellUper = new G4LogicalVolume(solidCellUper, skinMat, "logicCellUper");
+
+   for (G4int i = 0; i < 10; ++i) {
+    G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
+    physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+1, true);
+    // G4cout << "(i + 1) * 5 * um - yTissue: " << (i + 1) * 5 * um - yTissue << G4endl; 
+    }
+
+
+    G4int xN=xTissue/Voxel;
+	G4int yN=yTissue/Voxel;
+	G4int zN=zTissue/Voxel;
+
+    G4int xI=xIce/Voxel;
+	G4int yI=yIce/Voxel;
+	G4int zI=zIce/Voxel;
+
+
 
 
 
 	G4int voxelId=0;
 
+    
 
-
-    // Set user limits for the ice block
-    G4UserLimits* userLimits = new G4UserLimits();
-    userLimits->SetMaxAllowedStep(20*nm); // it is about the limet for each step 
-    logicIce->SetUserLimits(userLimits);
-    logicUperTissue->SetUserLimits(userLimits);
-    logicUnderTissue->SetUserLimits(userLimits);
-    logicIce->SetUserLimits(userLimits);
+    // G4UserLimits* userLimits = new G4UserLimits();
+    // userLimits->SetMaxAllowedStep(20*nm); // it is about the limet for each step 
+    // logicIce->SetUserLimits(userLimits);
+    // logicUperTissue->SetUserLimits(userLimits);
+    // logicUnderTissue->SetUserLimits(userLimits);
+    // logicIce->SetUserLimits(userLimits);
 
 
 

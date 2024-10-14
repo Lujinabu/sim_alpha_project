@@ -18,11 +18,11 @@ void MyRunAction::BeginOfRunAction(const G4Run*) {
     G4AnalysisManager *man = G4AnalysisManager::Instance();
 
   
-   man->OpenFile("26sepwithoutDFIceisWater.root");  
+   man->OpenFile("10octwithoutDFIceisWater.root");  
 
     // Create Ntuple for "UperTissue"
-    man->CreateNtuple("Uper&underTissue", "Depth");
-    man->CreateNtupleIColumn("Event");//0
+    man->CreateNtuple("logicCell", "Depth");
+    man->CreateNtupleIColumn("copyNo");//0
     man->CreateNtupleDColumn("prekineticEnergy");//1
     man->CreateNtupleDColumn("postkineticEnergy");//2
     man->CreateNtupleIColumn("particleID");//3
@@ -41,6 +41,7 @@ void MyRunAction::BeginOfRunAction(const G4Run*) {
 
 
     man->FinishNtuple(0);
+
 
     // // Create Ntuple for "UnderTissue"
     // man->CreateNtuple("Ice", "Depth");

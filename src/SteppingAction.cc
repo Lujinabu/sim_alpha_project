@@ -6,6 +6,8 @@
 #include "G4Alpha.hh"
 
 
+
+
 MySteppingAction::MySteppingAction(MyEventAction* eventAction){
 
 	fEventAction = eventAction;
@@ -24,7 +26,7 @@ MySteppingAction::~MySteppingAction(){}
   
 
 
-        if(volume->GetName()=="logicUperTissue"|| volume->GetName()=="logicUnderTissue"|| volume->GetName()=="logicIce"){     
+        if(volume->GetName()=="logicCellUper"|| volume->GetName()=="logicCellUnder"){     
             G4int eventID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();//the number of  the beam0
             G4double dE = aStep->GetTotalEnergyDeposit();
             G4double prekineticEnergy = aStep->GetPreStepPoint()->GetKineticEnergy();
@@ -42,7 +44,8 @@ MySteppingAction::~MySteppingAction(){}
             G4int particleID = -1;
 
             G4String particleName = aStep->GetTrack()->GetParticleDefinition()->GetParticleName();
-
+            // Retrieve the copy number from the volume
+          G4int copyNo = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber();  // This is the copy number
 
 
 
@@ -52,31 +55,31 @@ MySteppingAction::~MySteppingAction(){}
            if (parentID > 0) {
             parentParticleName = fEventAction->GetParentTrackParticleName(aStep->GetTrack()->GetParentID());
                  if (parentParticleName == "Ra224") {
-                 parentParticleID = 0;
+                 parentParticleID = 1;
                   //    G4cout << parentParticleName << " Ra224" << G4endl;
 
                  } else if (parentParticleName == "Rn220") {
-                 parentParticleID = 5;
+                 parentParticleID = 2;
                    //    G4cout << parentParticleName << "Rn220" << G4endl;
 
                   } else if (parentParticleName == "Po216") {
-                 parentParticleID = 6;
+                 parentParticleID = 3;
                  //    G4cout << parentParticleName << "Po216" << G4endl;
 
                  } else if (parentParticleName == "Pb212") {
-                  parentParticleID = 7;
+                  parentParticleID = 4;
                   //    G4cout << parentParticleName << " Pb212" << G4endl;
    
                   } else if (parentParticleName == "Bi212") {
-                   parentParticleID = 8;
+                   parentParticleID = 5;
                  //    G4cout << parentParticleName << "Bi212" << G4endl;
 
                  } else if (parentParticleName == "Tl208") {
-                 parentParticleID = 9;
+                 parentParticleID = 6;
                   //    G4cout << parentParticleName << " Tl208" << G4endl;
 
-                 } else if (parentParticleName == "Pb208") {
-                 parentParticleID = 10;
+                //  } else if (parentParticleName == "Pb208") {
+                //  parentParticleID = 7;
                  //    G4cout << parentParticleName << "Pb208" << G4endl;
 
                  } else if (parentParticleName == "alpha") {
@@ -105,7 +108,6 @@ MySteppingAction::~MySteppingAction(){}
               }
             
             
-            
                 // if (particleName == "Rn220"){
                 //     particleID = 1;
                 //    G4cout << particleName << " Ra224" << G4endl;
@@ -128,31 +130,34 @@ MySteppingAction::~MySteppingAction(){}
                   //    G4cout << particleName << " nu_e" << G4endl;
 
                   } else if (particleName == "Ra224") { // Adding Ra224 to start the decay chain
-                   particleID = 0; // Unique ID for Ra224
+                   particleID = 1; // Unique ID for Ra224
                   //    G4cout << particleName << " Ra224" << G4endl;
 
                   } else if (particleName == "Rn220") { // Assuming Rn220 for Radon-220
-                   particleID = 5;
+                   particleID = 2;
                   //    G4cout << particleName << " Rn220" << G4endl;
 
                   } else if (particleName == "Po216") { // Daughter nucleus of Rn220
-                   particleID = 6;
+                   particleID = 3;
                   //    G4cout << particleName << " Po216" << G4endl;
 
                   } else if (particleName == "Pb212") { // Daughter nucleus of Po216
-                   particleID = 7;
+                   particleID = 4;
                   //    G4cout << particleName << "Pb212" << G4endl;
 
                   } else if (particleName == "Bi212") { // Daughter nucleus of Pb212
-                   particleID = 8;
+                   particleID = 5;
+                  //    G4cout << particleName << "Bi212" << G4endl;
+                   } else if (particleName == "Po212") { // Daughter nucleus of Pb212
+                   particleID = 6;
                   //    G4cout << particleName << "Bi212" << G4endl;
 
                   } else if (particleName == "Tl208") { // Daughter nucleus of Bi212
-                   particleID = 9;
+                   particleID = 7;
                   //    G4cout << particleName << " Tl208" << G4endl;
 
-                  } else if (particleName == "Pb208") { // Stable end product of the decay chain
-                   particleID = 10;
+                  // } else if (particleName == "Pb208") { // Stable end product of the decay chain
+                  //  particleID = 10;
                     //    G4cout << particleName << "Pb208" << G4endl;
                     } else {
                      // G4cout << particleName << " outside not saved" << G4endl;
@@ -168,7 +173,7 @@ MySteppingAction::~MySteppingAction(){}
 
 
         
-	          man->FillNtupleIColumn(0, 0, eventID); //eventID is consistent with the BeamOn X number
+	          man->FillNtupleIColumn(0, 0, copyNo); //eventID is consistent with the BeamOn X number
 	          man->FillNtupleDColumn(0, 1, prekineticEnergy/keV);//particle kinetic energy in a given step, in keV
 	          man->FillNtupleDColumn(0, 2, postkineticEnergy/keV);//particle kinetic energy in a given step, in keV
 	          man->FillNtupleIColumn(0, 3, particleID);//particle ID
@@ -184,12 +189,14 @@ MySteppingAction::~MySteppingAction(){}
             man->FillNtupleDColumn(0, 13, particleMomDirection[0]);//post momentum direction of the particle
 	          man->FillNtupleDColumn(0, 14, particleMomDirection[1]);
 	          man->FillNtupleDColumn(0, 15, particleMomDirection[2]);
+            
 
 
             // // man->FillNtupleDColumn(0, 12, angle); // Angle between initial and final momentum directions
             man->AddNtupleRow(0);
 
-
+              // G4cout << prePoint << "prePoint" << G4endl;
+          
 
 
         // }else if (volume->GetName() == "logicIce") {

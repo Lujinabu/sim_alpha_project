@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.17 FATAL_ERROR)
 
-project(Rn220_ICE)
+project(Ra224_Glue)
 # project(sim_alpha_project)
 
 # Find Geant4 package
@@ -23,14 +23,14 @@ file(GLOB DATA_FILES "${PROJECT_SOURCE_DIR}/*.dat")
 file(COPY ${DATA_FILES} DESTINATION ${PROJECT_BINARY_DIR})
 
 # Create the executable
-add_executable(Rn220_ICE main.cc ${sources} ${headers})
+add_executable(Ra224_Glue main.cc ${sources} ${headers})
 # add_executable(sim_alpha_project main.cc ${sources} ${headers})
 
 
 # Link Geant4 libraries
-target_link_libraries(Rn220_ICE ${Geant4_LIBRARIES})
+target_link_libraries(Ra224_Glue ${Geant4_LIBRARIES})
 # target_link_libraries(sim_alpha_project ${Geant4_LIBRARIES})
 
 # Add custom target
-add_custom_target(Rn220_ICE_L DEPENDS Rn220_ICE)
+add_custom_target(Ra224_Glue_l DEPENDS Ra224_Glue)
 # add_custom_target(sim_alpha_project_L DEPENDS sim_alpha_project)

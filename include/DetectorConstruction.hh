@@ -24,10 +24,10 @@ class MyDetectorConstruction:public G4VUserDetectorConstruction{
 
         virtual G4VPhysicalVolume *Construct();
 		G4LogicalVolume* GetScoringVolume() const {return fScoringVolume;}
-        G4double xWorld, yWorld, zWorld, xIce, yIce, zIce, xTissue, yTissue, zTissue, xVoxel;
-    	G4Box *solidWorld, *solidIce, *solidUnderTissue, *solidUperTissue;
-		G4LogicalVolume *logicWorld, *logicIce, *logicUnderTissue, *logicUperTissue, *fScoringVolume;
-		G4VPhysicalVolume *physWorld, *physIce, *physUnderTissue, *physUperTissue;
+        G4double xWorld, yWorld, zWorld, xIce, yIce, zIce, xcell, ycell, zcell, xTissue, yTissue, zTissue, Voxel, margin;
+    	G4Box *solidWorld, *solidIce, *solidUnderTissue, *solidUperTissue, *solidCellUnder, *solidCellUper;
+		G4LogicalVolume *logicWorld, *logicIce, *logicUnderTissue, *logicUperTissue, *logicCellUnder, *logicCellUper, *fScoringVolume;
+		G4VPhysicalVolume *physWorld, *physIce, *physUnderTissue, *physUperTissue, *physiCellUnder, *physiCellUper;
 		G4Material *iceMat, *worldMat, *skinMat;
 
 
