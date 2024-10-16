@@ -6,6 +6,7 @@
 #include "EventAction.hh"
 #include <map>
 #include <set>
+#include "G4Track.hh"
 
 class MySteppingAction : public G4UserSteppingAction {
 public:
@@ -14,11 +15,72 @@ public:
 
     virtual void UserSteppingAction(const G4Step* step) override;
 
-private:
+// private:
     MyEventAction* fEventAction;
+
+  std::ofstream PSfile;
+  void savePoint(const G4Track *track, const G4ThreeVector & newPos, const G4ThreeVector & boxMomentum, const G4int & copy, const G4double & particleEnergy, const G4double & time, const G4int & originParticle);
+  G4ThreeVector transformDirection(const G4ThreeVector & position, const G4ThreeVector & worldMomentum);
+  MyDetectorConstruction *fDetector;
+  G4double calculateDistanceToExitBox(const G4ThreeVector & preStepPosition, const G4ThreeVector & preStepMomentumDirection);
 
     std::map<G4int, G4ThreeVector> initialPositionMap;
     std::set<G4int> decayedParticles;
+
+      std::map<G4String, G4int> particleMap{
+      {"e-", 1},
+      {"gamma", 2},
+      {"alpha", 3},
+      {"Rn220", 4},
+      {"Po216", 5},
+      {"Pb212", 6},
+      {"Bi212", 7},
+      {"Tl208", 8},
+      {"Po212", 9},
+      {"Pb208", 10},
+      {"e+", 11}
+      };
+
+  std::map<G4String, G4int> particleOriginMap{
+      {"Ra224", 0},
+      {"Rn220", 1},
+      {"Po216", 2},
+      {"Pb212", 3},
+      {"Bi212", 4},
+      {"Tl208", 5},
+      {"Po212", 6},
+      {"Pb208", 7},
+      {"alphaRa224", 8},
+      {"alphaRn220", 9},
+      {"alphaPo216", 10},
+      {"alphaBi212", 11},
+      {"alphaPo212", 12},
+      {"e-Rn220", 13},
+      {"e-Po216", 14},
+      {"e-Pb212", 15},
+      {"e-Bi212", 16},
+      {"e-Tl208", 17},
+      {"e-Po212", 18},
+      {"e-Pb208", 19},
+      {"gammaRn220", 20},
+      {"gammaPo216", 21},
+      {"gammaPb212", 22},
+      {"gammaBi212", 23},
+      {"gammaTl208", 24},
+      {"gammaPo212", 25},
+      {"gammaPb208", 26},
+      {"e+", 27}};
+
+  std::map<G4int, G4String> reverseParticleOriginMap{
+      {0, "Ra224"},
+      {1, "Rn220"},
+      {2, "Po216"},
+      {3, "Pb212"},
+      {4, "Bi212"},
+      {5, "Tl208"},
+      {6, "Po212"},
+      {7, "Pb208"},
+  };
 };
 
 #endif

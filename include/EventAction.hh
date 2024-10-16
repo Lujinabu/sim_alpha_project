@@ -18,8 +18,13 @@ class MyEventAction : public G4UserEventAction{
 		virtual G4int GetParentTrackID(G4int trackid);
 		virtual void BeginOfEventAction(const G4Event*);
 		virtual void EndOfEventAction(const G4Event*);
+		std::map<G4int, G4ThreeVector> particlePos;
+        std::map<G4int, G4ThreeVector> particleDist;
+        std::map<G4int, G4ThreeVector> decayPos;
+        std::map<G4int, G4int> parentParticle; //map to parent particle from radioactive decay
+        std::vector<G4int> tracks;
 	
-	private:
+	// private:
 
     		std::map<G4int, G4String> mapping_parentTrack;//track id, parent name
     		std::map<G4int, G4int> mapping_parentID;//track id, parent track id

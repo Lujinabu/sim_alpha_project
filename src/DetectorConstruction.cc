@@ -10,9 +10,9 @@
 
 MyDetectorConstruction::MyDetectorConstruction() {
     // Define dimensions (half-lengths)
-    xWorld = 100*um;
-    yWorld = 100*um;
-    zWorld = 100*um;
+    xWorld = 500*um;
+    yWorld = 500*um;
+    zWorld = 500*um;
 
     xIce = 20*um;
     yIce = 10*um;
@@ -26,7 +26,7 @@ MyDetectorConstruction::MyDetectorConstruction() {
     ycell=0.3*um;
     zcell=80*um;
 
-    Voxel = 300*nm; 
+    Voxel = 0.3*um; 
     margin = 0*nm;
     // Voxel = 1*um;  
 
@@ -100,7 +100,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
 
    for (G4int i = 0; i < 10; ++i) {
     G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
-    physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+1, true);
+    physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+100, true);
     // G4cout << "(i + 1) * 5 * um - yTissue: " << (i + 1) * 5 * um - yTissue << G4endl; 
     }
 
