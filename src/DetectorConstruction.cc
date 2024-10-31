@@ -23,10 +23,10 @@ MyDetectorConstruction::MyDetectorConstruction() {
 	zTissue=80*um;
 
     xcell=80*um;
-    ycell=0.3*um;
+    ycell=0.15*um;
     zcell=80*um;
 
-    Voxel = 0.3*um; 
+    Voxel = 0.15*um; 
     margin = 0*nm;
     // Voxel = 1*um;  
 
@@ -91,7 +91,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     for (G4int i = 0; i < 10; ++i) {
         G4double yOffset = -(i + 1) * 5 * um + yTissue;  // Adjust offset to place within Under Tissue
         physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i+1, true);
-        // G4cout << " -(i + 1) * 5 * um + yTissue: " <<  -(i + 1) * 5 * um + yTissue << G4endl;  
+        G4cout << " -(i + 1) * 5 * um + yTissue: " <<  ((-(i + 1) * 5 * um) + yTissue)/um << G4endl;  
     }
 
     // Upper cells
@@ -101,7 +101,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
    for (G4int i = 0; i < 10; ++i) {
     G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
     physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+100, true);
-    // G4cout << "(i + 1) * 5 * um - yTissue: " << (i + 1) * 5 * um - yTissue << G4endl; 
+    G4cout << "(i + 1) * 5 * um - yTissue: " <<((i + 1) * 5 * um - yTissue)/um << G4endl; 
     }
 
 
