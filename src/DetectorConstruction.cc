@@ -10,21 +10,21 @@
 
 MyDetectorConstruction::MyDetectorConstruction() {
     // Define dimensions (half-lengths)
-    xWorld = 500*um;
-    yWorld = 500*um;
-    zWorld = 500*um;
+    xWorld = 800*um;
+    yWorld = 800*um;
+    zWorld = 800*um;
 
-    xIce = 20*um;
-    yIce = 10*um;
-    zIce = 20*um;
+    xIce = 60*um;
+    yIce = 40*um;
+    zIce = 60*um;
 
-    xTissue=80*um;
-	yTissue=80*um;
-	zTissue=80*um;
+    xTissue=120*um;
+	yTissue=120*um;
+	zTissue=120*um;
 
-    xcell=80*um;
+    xcell=120*um;
     ycell=0.15*um;
-    zcell=80*um;
+    zcell=120*um;
 
     Voxel = 0.15*um; 
     margin = 0*nm;
@@ -88,20 +88,20 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     logicCellUnder = new G4LogicalVolume(solidCellUnder, skinMat, "logicCellUnder");
 
     // Place the under cells
-    for (G4int i = 0; i < 10; ++i) {
-        G4double yOffset = -(i + 1) * 5 * um + yTissue;  // Adjust offset to place within Under Tissue
+    for (G4int i = 0; i < 20; ++i) {
+        G4double yOffset = -(i + 1) * 2.5 * um + 100;  // Adjust offset to place within Under Tissue
         physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i+1, true);
-        G4cout << " -(i + 1) * 5 * um + yTissue: " <<  ((-(i + 1) * 5 * um) + yTissue)/um << G4endl;  
+        G4cout << " -(i + 1) * 5 * um + 100: " <<  ((-(i + 1) * 5 * um) + yTissue)/um << G4endl;  
     }
 
     // Upper cells
     solidCellUper = new G4Box("solidCellUper", xcell, ycell, zcell);
     logicCellUper = new G4LogicalVolume(solidCellUper, skinMat, "logicCellUper");
 
-   for (G4int i = 0; i < 10; ++i) {
-    G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
+   for (G4int i = 0; i < 20; ++i) {
+    G4double yOffset = (i + 1) * 2.5 * um - 100;  // Adjust offset to place within Uper Tissue
     physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+100, true);
-    G4cout << "(i + 1) * 5 * um - yTissue: " <<((i + 1) * 5 * um - yTissue)/um << G4endl; 
+    G4cout << "(i + 1) * 5 * um - 100: " <<((i + 1) * 5 * um - yTissue)/um << G4endl; 
     }
 
 
