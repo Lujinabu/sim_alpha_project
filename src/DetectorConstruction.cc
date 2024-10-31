@@ -88,20 +88,21 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     logicCellUnder = new G4LogicalVolume(solidCellUnder, skinMat, "logicCellUnder");
 
     // Place the under cells
-    for (G4int i = 0; i < 20; ++i) {
-        G4double yOffset = -(i + 1) * 2.5 * um + 100;  // Adjust offset to place within Under Tissue
+    for (G4int i = 0; i < 25; ++i) {
+        G4double yOffset = -(i + 1) * 5 * um + yTissue;  // Adjust offset to place within Under Tissue
         physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i+1, true);
-        G4cout << " -(i + 1) * 5 * um + 100: " <<  ((-(i + 1) * 5 * um) + yTissue)/um << G4endl;  
+        G4cout << "copy = " << i+1 <<" offset = " <<yOffset << G4endl; 
+
     }
 
     // Upper cells
     solidCellUper = new G4Box("solidCellUper", xcell, ycell, zcell);
     logicCellUper = new G4LogicalVolume(solidCellUper, skinMat, "logicCellUper");
 
-   for (G4int i = 0; i < 20; ++i) {
-    G4double yOffset = (i + 1) * 2.5 * um - 100;  // Adjust offset to place within Uper Tissue
+   for (G4int i = 0; i < 25; ++i) {
+    G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
     physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+100, true);
-    G4cout << "(i + 1) * 5 * um - 100: " <<((i + 1) * 5 * um - yTissue)/um << G4endl; 
+    G4cout << "copy = " << i+100 <<" offset = " <<yOffset << G4endl; 
     }
 
 
