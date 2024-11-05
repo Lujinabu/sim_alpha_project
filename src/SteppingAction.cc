@@ -10,11 +10,11 @@ MySteppingAction::MySteppingAction(MyEventAction *eventAction)
 {
 
   fEventAction = eventAction;
-  G4String fileName{"PSfiletest.bin"};
+  G4String fileName{"PSfile_1Nov_100.bin"};
 
-  PSfiletest.open(fileName, std::ios::out | std::ios::binary);
+  PSfile_1Nov_100.open(fileName, std::ios::out | std::ios::binary);
 }
-MySteppingAction::~MySteppingAction() { PSfiletest.close(); }
+MySteppingAction::~MySteppingAction() { PSfile_1Nov_100.close(); }
 
 void MySteppingAction::UserSteppingAction(const G4Step *step)
 {
@@ -78,7 +78,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
 
     if (volume == "physUnderTissue")
     {
-      newY = ((80 * um - copyPos.y() + 10 * um) + worldPos.y()); // for cells under// so I need to have this value= to -0.00015mm or 15nm to be half the voxle
+      newY = ((120 * um - copyPos.y() + 40 * um) + worldPos.y()); // for cells under// so I need to have this value= to -0.00015mm or 15nm to be half the voxle
       // G4cout<<(-copyPos.y() + worldPos.y())/um << G4endl;
       //  G4cout<<((80*um-copyPos.y()+10*um)+worldPos.y())<< G4endl;
       // G4cout<<"direaction  "<<step->GetPostStepPoint()->GetMomentumDirection()<<G4endl;
@@ -87,7 +87,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     }
     else if (volume == "physUperTissue")
     {
-      newY = ((80 * um + copyPos.y() + 10 * um) - worldPos.y()) * -1; // for cells above
+      newY = ((120 * um + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
                                                                       // G4cout << "newY be here" << newY << G4endl;
       // G4cout<<((80*um+copyPos.y() +10*um)- worldPos.y())*-1<< G4endl;
       // G4cout<<"direaction  "<<step->GetPostStepPoint()->GetMomentumDirection()<<G4endl;
@@ -132,14 +132,14 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
         if (volume == "physiCellUnder")
         {
 
-          newY = ((80 * um - copyPos.y() + 10 * um) + worldPos.y()); // for cells under
+          newY = ((120 * um - copyPos.y() + 40 * um) + worldPos.y()); // for cells under
           newPos = G4ThreeVector(newX, newY, newZ);
           // G4cout << "newY" << newY << G4endl;
           // G4cout << "copyPosthisone" << copyPos.y() / um << "worldPos" << -worldPos.y() / um << G4endl;
         }
         else if (volume == "physiCellUper")
         {
-          newY = ((80 * um + copyPos.y() + 10 * um) - worldPos.y()) * -1; // for cells above
+          newY = ((120 * um + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
           newPos = G4ThreeVector(newX, newY, newZ);
           // G4cout <<"newYfor the under"<<newY<< G4endl;//There is error here that all the newy will be same
         }
@@ -187,7 +187,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
       G4ThreeVector newPos = G4ThreeVector();
       if (volume == "physiCellUnder")
       {
-        G4double newY = ((80 * um - copyPos.y() + 10 * um) + worldPos.y()); // for cells under // here i do 80 -75 +10 to show the pos of the world
+        G4double newY = ((120 * um - copyPos.y() + 40 * um) + worldPos.y()); // for cells under // here i do 80 -75 +10 to show the pos of the world
         newPos = G4ThreeVector(newX, newY, newZ);
         // G4cout <<"newYfor the under"<<worldPos.y()<< G4endl;//There is error here that all the newy will be same
         //  G4cout<<"copyPos  "<< copyPos.y()/um<<"worldPos  " << worldPos.y()/um << G4endl;
@@ -197,7 +197,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
       }
       else if (volume == "physiCellUper")
       {
-        G4double newY = ((80 * um + copyPos.y() + 10 * um) - worldPos.y()) * -1; // for cells above
+        G4double newY = ((120 * um + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
         newPos = G4ThreeVector(newX, newY, newZ);
         // G4cout <<"newYfor the uper" << newY << G4endl;//There is an error here that there nothing in newy
       }
@@ -233,7 +233,8 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
       // save particle, new position and distance saved
       G4ThreeVector preStepBox = entryPosition + (fEventAction->particleDist)[step->GetTrack()->GetTrackID()]; // pre step point position in box frame
 
-      if (std::abs(preStepBox.y()) >= 0.00015)
+      // G4cout << std::abs(preStepBox.y()) << G4endl;
+      if ((std::abs(preStepBox.y()) >= 0.00015) || (std::abs( (std::abs(preStepBox.y())) - 0.00015 ) <1e-10))
       {
         // Particles which scatter back into the box are not added to the phase space file as scattering is included in the DNA simulation
         return;
@@ -251,12 +252,15 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
         tYpos = tYpos > 1e-15 ? tYpos : DBL_MAX;
         
         // G4cout<<"preStepBox.y()  "<<preStepBox.y()<<G4endl;
+        // G4cout<<"tYneg  "<<tYneg<<G4endl;
         // G4cout<<"tYpos  "<<tYpos<<G4endl;
         // G4cout<<"boxMomentumPre.y  "<<boxMomentumPre.y()<<G4endl;
         
         G4double distanceToExit = std::min({tYpos, tYneg}); // shortest distance travelled to cross y box surface
 
         G4ThreeVector newPos = preStepBox + (distanceToExit * boxMomentumPre);
+        // G4cout<<"newPos  "<<newPos<<G4endl;
+
 
         fEventAction->particleDist.erase(step->GetTrack()->GetTrackID());
         fEventAction->particleDist.insert(std::pair<int, G4ThreeVector>()); // travelled (0,0,0) from the new starting position
@@ -283,6 +287,11 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
         else if ((newPos.z() < 0) && (std::abs(newPos.z() + 0.00015) < 1e-15))
           newPos.setZ(+0.00015);
 
+          if (newPos.z() < -0.00015) {
+       G4cout << "newPos  " << newPos <<" preStepBox  "<<preStepBox<<" distanceToExit "<<distanceToExit<<" boxMomentumPre  "<< boxMomentumPre<< G4endl;
+        }
+
+
         G4double percentageOfStep = distanceToExit / stepDistance;
 
         // calculate KE at point where crossing occurs
@@ -292,7 +301,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
         G4double newTime = step->GetPreStepPoint()->GetGlobalTime() + (step->GetDeltaTime() * percentageOfStep);
 
         savePoint(step->GetTrack(), newPos, boxMomentumPre, step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo(), newKE, newTime, fEventAction->parentParticle[TrackID]);
-        // G4cout<<newPos<<G4endl;
+        // G4cout<<"newPos  "<<newPos<<G4endl;
 
         G4double percentageAccountedFor = percentageOfStep;
 
@@ -329,10 +338,10 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
               G4double distanceToExit = std::min({tYpos, tYneg}); // shortest distance travelled to cross y box surface
               // G4cout<<"tYneg  "<<tYneg<<G4endl;
               // G4cout<<"tYpos  "<<tYpos<<G4endl;
-               G4cout<<"preStepBox.y()  "<<preStepBox.y()<<G4endl;
-               G4cout<<"tYpos  "<<tYpos<<G4endl;
-               G4cout<<"boxMomentumPre.y  "<<boxMomentumPre.y()<<G4endl;
-               G4cout<<"entryPosition  "<<entryPosition<<G4endl;
+              //  G4cout<<"preStepBox.y()  "<<preStepBox.y()<<G4endl;
+              //  G4cout<<"tYpos  "<<tYpos<<G4endl;
+              //  G4cout<<"boxMomentumPre.y  "<<boxMomentumPre.y()<<G4endl;
+              //  G4cout<<"entryPosition  "<<entryPosition<<G4endl;
               G4ThreeVector newPos = preStepBox + (distanceToExit * boxMomentumPre);
 
               fEventAction->particleDist.erase(step->GetTrack()->GetTrackID());
@@ -366,7 +375,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
             newTime += (step->GetDeltaTime() * percentageOfStep);
             distanceToExit += distanceToExitRemainder;
 
-            // savePoint(step->GetTrack(), newPos, boxMomentumPre, step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo(), newKE, newTime, fEventAction->parentParticle[TrackID]);
+            savePoint(step->GetTrack(), newPos, boxMomentumPre, step->GetPreStepPoint()->GetPhysicalVolume()->GetCopyNo(), newKE, newTime, fEventAction->parentParticle[TrackID]);
 
             percentageAccountedFor += percentageOfStep;
           }
@@ -420,7 +429,7 @@ void MySteppingAction::savePoint(const G4Track *track, const G4ThreeVector &newP
   output[10] = time / s;
   output[11] = originParticle;
 
-  PSfiletest.write((char *)&output, sizeof(output));
+  PSfile_1Nov_100.write((char *)&output, sizeof(output));
   fEventAction->tracks.push_back(track->GetTrackID());
 
   // G4cout << particleName << " saved at = " << newPos / mm << " with KE = " << particleEnergy << " with momentum " << boxMomentum << " TracKID = " << track->GetTrackID() << " originParticle " << originParticle << " copy " << copy << G4endl;
