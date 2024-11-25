@@ -10,11 +10,11 @@ MySteppingAction::MySteppingAction(MyEventAction *eventAction)
 {
 
   fEventAction = eventAction;
-  G4String fileName{"PSfile_1Nov_100.bin"};
+  G4String fileName{"PSfile_14Nov_100.bin"};
 
-  PSfile_1Nov_100.open(fileName, std::ios::out | std::ios::binary);
+  PSfile_14Nov_100.open(fileName, std::ios::out | std::ios::binary);
 }
-MySteppingAction::~MySteppingAction() { PSfile_1Nov_100.close(); }
+MySteppingAction::~MySteppingAction() { PSfile_14Nov_100.close(); }
 
 void MySteppingAction::UserSteppingAction(const G4Step *step)
 {
@@ -429,10 +429,10 @@ void MySteppingAction::savePoint(const G4Track *track, const G4ThreeVector &newP
   output[10] = time / s;
   output[11] = originParticle;
 
-  PSfile_1Nov_100.write((char *)&output, sizeof(output));
+  PSfile_14Nov_100.write((char *)&output, sizeof(output));
   fEventAction->tracks.push_back(track->GetTrackID());
   if (particleID == 3){
-   G4cout<<" originParticle "<<originParticle<<" eventID  "<< eventID<<" newPos.y() "<< newPos.y()/ mm<<" particleEnergy / MeV"<<particleEnergy / MeV<<G4endl;
+  //  G4cout<<" originParticle "<<originParticle<<" eventID  "<< eventID<<" newPos.y() "<< newPos.y()/ mm<<" particleEnergy / MeV"<<particleEnergy / MeV<<G4endl;
   }
   // G4cout << particleName << " saved at = " << newPos / mm << " with KE = " << particleEnergy << " with momentum " << boxMomentum << " TracKID = " << track->GetTrackID() << " originParticle " << originParticle << " copy " << copy << G4endl;
 }

@@ -1483,7 +1483,7 @@ G4ThreeVector G4RadioactiveDecay::calculateDiffusion(const G4double diffusionTim
 
     if (startVolume == "physIce")
     {
-        // Assumed no diffusion in the seed so no change in position
+        // Assumed no diffusion in the ice so no change in position
         return changePosition;
     }
     // generate random direction vector for the total diffusion

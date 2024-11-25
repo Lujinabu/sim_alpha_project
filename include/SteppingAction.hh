@@ -18,7 +18,7 @@ public:
 // private:
     MyEventAction* fEventAction;
 
-  std::ofstream PSfile_1Nov_100;
+  std::ofstream PSfile_14Nov_100;
   void savePoint(const G4Track *track, const G4ThreeVector & newPos, const G4ThreeVector & boxMomentum, const G4int & copy, const G4double & particleEnergy, const G4double & time, const G4int & originParticle);
   G4ThreeVector transformDirection(const G4ThreeVector & position, const G4ThreeVector & worldMomentum);
   MyDetectorConstruction *fDetector;
