@@ -1277,35 +1277,35 @@ void G4RadioactiveDecay::DecayAnalog(const G4Track &theTrack)
 
 
     G4ThreeVector changePosition{0};
-    // if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Rn220"))
-    // {
-    //     changePosition = calculateDiffusion(finalLocalTime, 1.12e-3, theTrack); // mm2 s-1
-    // }
-    // if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName()=="Pb212"))
-    // {
-    //     changePosition = calculateDiffusion(finalLocalTime, 1.22e-5, theTrack); // mm2 s-1
-    // }
-    // if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName()=="Bi212"))
-    // {
-    //     changePosition = calculateDiffusion(finalLocalTime, 6.78e-7, theTrack); // mm2 s-1
+    if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Rn220"))
+    {
+        changePosition = calculateDiffusion(finalLocalTime, 1.12e-3, theTrack); // mm2 s-1
+    }
+    if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName()=="Pb212"))
+    {
+        changePosition = calculateDiffusion(finalLocalTime, 1.22e-5, theTrack); // mm2 s-1
+    }
+    if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName()=="Bi212"))
+    {
+        changePosition = calculateDiffusion(finalLocalTime, 6.78e-7, theTrack); // mm2 s-1
         
-    // }
-    // if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Fr221"))
-    //  {
-    //    changePosition = calculateDiffusion(finalLocalTime, 1.2e-6, theTrack); // mm2 s-1
-    //  }
-    //  if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Bi113"))
-    // {
-    // changePosition = calculateDiffusion(finalLocalTime, 6.5e-7, theTrack); // mm2 s-1
-    // }
-    //  if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Tl209"))
-    //  {
-    // changePosition = calculateDiffusion(finalLocalTime, 6.0e-6, theTrack); // mm2 s-1
-    // }
-    //  if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Pb209"))
-    //  {
-    // changePosition = calculateDiffusion(finalLocalTime, 4.0e-7, theTrack); // mm2 s-1
-    //  }
+    }
+    if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Fr221"))
+     {
+       changePosition = calculateDiffusion(finalLocalTime, 1.2e-6, theTrack); // mm2 s-1
+     }
+     if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Bi113"))
+    {
+    changePosition = calculateDiffusion(finalLocalTime, 6.5e-7, theTrack); // mm2 s-1
+    }
+     if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Tl209"))
+     {
+    changePosition = calculateDiffusion(finalLocalTime, 6.0e-6, theTrack); // mm2 s-1
+    }
+     if ((numberOfSecondaries > 0) && (theTrack.GetParticleDefinition()->GetParticleName() == "Pb209"))
+     {
+    changePosition = calculateDiffusion(finalLocalTime, 4.0e-7, theTrack); // mm2 s-1
+     }
 
 
 
@@ -1479,13 +1479,18 @@ G4ThreeVector G4RadioactiveDecay::calculateDiffusion(const G4double diffusionTim
     // G4double tolerance = 1e-12; // tolerance for checking time for intersection with seed to avoid rounding errors
 
     G4ThreeVector changePosition = G4ThreeVector();
+    G4String startVolume = theTrack.GetVolume()->GetName();
 
+    if (startVolume == "physIce")
+    {
+        // Assumed no diffusion in the seed so no change in position
+        return changePosition;
+    }
     // generate random direction vector for the total diffusion
     G4ThreeVector direction = G4ThreeVector(G4UniformRand() - 0.5, G4UniformRand() - 0.5, G4UniformRand() - 0.5);
     direction = direction * 1 / direction.mag();
 
     G4ThreeVector startPos = theTrack.GetPosition();
-    G4String startVolume = theTrack.GetVolume()->GetName();
 
     // Check if the direction vector ever intersects with the seed
     // G4double r = 0.15 * mm;
@@ -1495,11 +1500,6 @@ G4ThreeVector G4RadioactiveDecay::calculateDiffusion(const G4double diffusionTim
     // G4double B = 2 * (startPos.x() * direction.x() + startPos.y() * direction.y());
     // G4double C = startPos.x() * startPos.x() + startPos.y() * startPos.y() - r * r;
 
-    // if (startVolume == "physIce")
-    // {
-    //     // Assumed no diffusion in the seed so no change in position
-    //     return changePosition;
-    // }
     // else
     // {
     //     if ((B * B - 4 * A * C) < 0)

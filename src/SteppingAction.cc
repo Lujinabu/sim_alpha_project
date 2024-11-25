@@ -431,7 +431,9 @@ void MySteppingAction::savePoint(const G4Track *track, const G4ThreeVector &newP
 
   PSfile_1Nov_100.write((char *)&output, sizeof(output));
   fEventAction->tracks.push_back(track->GetTrackID());
-
+  if (particleID == 3){
+   G4cout<<" originParticle "<<originParticle<<" eventID  "<< eventID<<" newPos.y() "<< newPos.y()/ mm<<" particleEnergy / MeV"<<particleEnergy / MeV<<G4endl;
+  }
   // G4cout << particleName << " saved at = " << newPos / mm << " with KE = " << particleEnergy << " with momentum " << boxMomentum << " TracKID = " << track->GetTrackID() << " originParticle " << originParticle << " copy " << copy << G4endl;
 }
 

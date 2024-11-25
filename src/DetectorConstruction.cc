@@ -46,10 +46,10 @@ void MyDetectorConstruction::DefineMaterials() {
     G4NistManager* nist = G4NistManager::Instance();
 
     worldMat = nist->FindOrBuildMaterial("G4_AIR");
-    iceMat = nist->FindOrBuildMaterial("G4_WATER");  // Ice is modeled as water
-    // iceMat = new G4Material("Ice", 0.92 * g/cm3, 2);
-    // iceMat->AddElement(nist->FindOrBuildElement("H"), 2);
-    // iceMat->AddElement(nist->FindOrBuildElement("O"), 1);
+    // iceMat = nist->FindOrBuildMaterial("G4_WATER");  // Ice is modeled as water
+    iceMat = new G4Material("Ice", 0.92 * g/cm3, 2);
+    iceMat->AddElement(nist->FindOrBuildElement("H"), 2);
+    iceMat->AddElement(nist->FindOrBuildElement("O"), 1);
     
     skinMat = nist->FindOrBuildMaterial("G4_WATER");
 
