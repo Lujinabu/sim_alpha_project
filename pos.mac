@@ -3,7 +3,7 @@
 /run/initialize
 /gps/pos/type Volume
 /gps/pos/shape Para
-/gps/pos/centre 0 -38 0 um
+/gps/pos/centre 0 -39.999999925 0 um    
 /gps/pos/halfx 60 um
 /gps/pos/halfy 2 um
 /gps/pos/halfz 60 um

@@ -10,11 +10,11 @@ MySteppingAction::MySteppingAction(MyEventAction *eventAction)
 {
 
   fEventAction = eventAction;
-  G4String fileName{"PSfile_14Nov_100.bin"};
+  G4String fileName{"PSfile16_At211_4µm_5gab.bin"};
 
-  PSfile_14Nov_100.open(fileName, std::ios::out | std::ios::binary);
+  PSfile16_At211_4µm_5gab.open(fileName, std::ios::out | std::ios::binary);
 }
-MySteppingAction::~MySteppingAction() { PSfile_14Nov_100.close(); }
+MySteppingAction::~MySteppingAction() { PSfile16_At211_4µm_5gab.close(); }
 
 void MySteppingAction::UserSteppingAction(const G4Step *step)
 {
@@ -25,6 +25,14 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
 
   G4ParticleDefinition *particleType = track->GetDefinition();
   G4int TrackID = step->GetTrack()->GetTrackID();
+
+  if (particleName == "nu_e")
+    return;
+
+  if ((fEventAction->parentParticle.find(TrackID) == fEventAction->parentParticle.end()) && (step->GetTrack()->GetCreatorProcess() == nullptr))
+fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));
+G4cout << TrackID << G4endl;
+G4cout << particleName << G4endl;
   if ((fEventAction->parentParticle.find(TrackID) == fEventAction->parentParticle.end()) && (step->GetTrack()->GetCreatorProcess() != nullptr))
   {
     // track ID not found, save to map, trackID: creator particle from decay (e-,alpha, gamma) for split of DNA damage by source
@@ -32,18 +40,30 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     {
       if (G4StrUtil::contains(particleName, "[")) // to catch excited states
       {
-        fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));
+        fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));// what that for 
+        // G4cout<<"1"<<G4endl;
+        // G4cout<<"particleName  "<< particleName << " " << particleOriginMap[particleName.substr(0, 5)]<<G4endl;
+
       }
       else if ((particleName == "e-") || (particleName == "gamma") || (particleName == "alpha") || (particleName == "e+")) // save product and parent names
       {
         G4String parentName = reverseParticleOriginMap[fEventAction->parentParticle[step->GetTrack()->GetParentID()]];
         G4String combinedName = particleName + parentName;
 
+        //  G4cout<<"copyPos uper  "<< copyPos.y()/mm<<"worldPos  " << worldPos.y()/mm << G4endl;
+        // G4cout<<"2"<<G4endl;
+        // G4cout<<"combinedName  "<< particleName + parentName<<G4endl;
+        // G4cout << "fEventAction->parentParticle[step->GetTrack()->GetParentID()] " << fEventAction->parentParticle[step->GetTrack()->GetParentID()] <<G4endl;
+        // G4cout<<"step->GetTrack()->GetParentID()  "<<  step->GetTrack()->GetParentID()<<G4endl;
         fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[combinedName]));
       }
       else
       {
         fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName]));
+        // G4cout<<"3"<<G4endl;
+
+        // G4cout<<"particleName  "<< particleName << " " << particleOriginMap[particleName.substr(0, 5)]<<G4endl;
+
       }
     }
     else
@@ -78,7 +98,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
 
     if (volume == "physUnderTissue")
     {
-      newY = ((120 * um - copyPos.y() + 40 * um) + worldPos.y()); // for cells under// so I need to have this value= to -0.00015mm or 15nm to be half the voxle
+      newY = ((10 * mm - copyPos.y() + 40 * um) + worldPos.y()); // for cells under// so I need to have this value= to -0.00015mm or 15nm to be half the voxle
       // G4cout<<(-copyPos.y() + worldPos.y())/um << G4endl;
       //  G4cout<<((80*um-copyPos.y()+10*um)+worldPos.y())<< G4endl;
       // G4cout<<"direaction  "<<step->GetPostStepPoint()->GetMomentumDirection()<<G4endl;
@@ -87,7 +107,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     }
     else if (volume == "physUperTissue")
     {
-      newY = ((120 * um + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
+      newY = ((10 * mm + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
                                                                       // G4cout << "newY be here" << newY << G4endl;
       // G4cout<<((80*um+copyPos.y() +10*um)- worldPos.y())*-1<< G4endl;
       // G4cout<<"direaction  "<<step->GetPostStepPoint()->GetMomentumDirection()<<G4endl;
@@ -132,15 +152,17 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
         if (volume == "physiCellUnder")
         {
 
-          newY = ((120 * um - copyPos.y() + 40 * um) + worldPos.y()); // for cells under
+          newY = ((10 * mm - copyPos.y() + 40 * um) + worldPos.y()); // for cells under
           newPos = G4ThreeVector(newX, newY, newZ);
           // G4cout << "newY" << newY << G4endl;
-          // G4cout << "copyPosthisone" << copyPos.y() / um << "worldPos" << -worldPos.y() / um << G4endl;
+          // G4cout << "copyPosthisoneUnder" << copyPos.y() / um << "worldPos" << -worldPos.y() / um << G4endl;
         }
         else if (volume == "physiCellUper")
         {
-          newY = ((120 * um + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
+          newY = ((10 * mm+ copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
           newPos = G4ThreeVector(newX, newY, newZ);
+          // G4cout << "copyPosthisoneUper" << copyPos.y() / um << "worldPos" << -worldPos.y() / um << G4endl;
+
           // G4cout <<"newYfor the under"<<newY<< G4endl;//There is error here that all the newy will be same
         }
         else
@@ -187,18 +209,20 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
       G4ThreeVector newPos = G4ThreeVector();
       if (volume == "physiCellUnder")
       {
-        G4double newY = ((120 * um - copyPos.y() + 40 * um) + worldPos.y()); // for cells under // here i do 80 -75 +10 to show the pos of the world
+        G4double newY = ((10 * mm - copyPos.y() + 40 * um) + worldPos.y()); // for cells under // here i do 80 -75 +10 to show the pos of the world
         newPos = G4ThreeVector(newX, newY, newZ);
         // G4cout <<"newYfor the under"<<worldPos.y()<< G4endl;//There is error here that all the newy will be same
-        //  G4cout<<"copyPos  "<< copyPos.y()/um<<"worldPos  " << worldPos.y()/um << G4endl;
-        //     G4cout<<"newY"<<newY<< G4endl;
+        //  G4cout<<"copyPos under  "<< copyPos.y()/mm<<"worldPos  " << worldPos.y()/mm << G4endl;
+            // G4cout<<"newY"<<newY<< G4endl;
 
         // G4cout <<"newYfor the under"<< newY<< G4endl;//There is error here that all the newy will be same
       }
       else if (volume == "physiCellUper")
       {
-        G4double newY = ((120 * um + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
+        G4double newY = ((10 * mm + copyPos.y() + 40 * um) - worldPos.y()) * -1; // for cells above
         newPos = G4ThreeVector(newX, newY, newZ);
+        //  G4cout<<"copyPos uper  "<< copyPos.y()/mm<<"worldPos  " << worldPos.y()/mm << G4endl;
+
         // G4cout <<"newYfor the uper" << newY << G4endl;//There is an error here that there nothing in newy
       }
       else
@@ -288,7 +312,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
           newPos.setZ(+0.00015);
 
           if (newPos.z() < -0.00015) {
-       G4cout << "newPos  " << newPos <<" preStepBox  "<<preStepBox<<" distanceToExit "<<distanceToExit<<" boxMomentumPre  "<< boxMomentumPre<< G4endl;
+      //  G4cout << "newPos  " << newPos <<" preStepBox  "<<preStepBox<<" distanceToExit "<<distanceToExit<<" boxMomentumPre  "<< boxMomentumPre<< G4endl;
         }
 
 
@@ -407,6 +431,7 @@ void MySteppingAction::savePoint(const G4Track *track, const G4ThreeVector &newP
   G4int eventID = G4EventManager::GetEventManager()->GetConstCurrentEvent()->GetEventID();
 
   G4String particleName = track->GetParticleDefinition()->GetParticleName();
+  // G4cout <<"particleName  "<<  particleName<<G4endl;
 
   G4float particleID = particleMap[particleName];
   if (particleID == 0)
@@ -429,11 +454,11 @@ void MySteppingAction::savePoint(const G4Track *track, const G4ThreeVector &newP
   output[10] = time / s;
   output[11] = originParticle;
 
-  PSfile_14Nov_100.write((char *)&output, sizeof(output));
+  PSfile16_At211_4µm_5gab.write((char *)&output, sizeof(output));
   fEventAction->tracks.push_back(track->GetTrackID());
-  if (particleID == 3){
+  // if (particleID == 32){
   //  G4cout<<" originParticle "<<originParticle<<" eventID  "<< eventID<<" newPos.y() "<< newPos.y()/ mm<<" particleEnergy / MeV"<<particleEnergy / MeV<<G4endl;
-  }
+  // }
   // G4cout << particleName << " saved at = " << newPos / mm << " with KE = " << particleEnergy << " with momentum " << boxMomentum << " TracKID = " << track->GetTrackID() << " originParticle " << originParticle << " copy " << copy << G4endl;
 }
 

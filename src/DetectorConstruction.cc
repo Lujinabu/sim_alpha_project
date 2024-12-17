@@ -10,21 +10,21 @@
 
 MyDetectorConstruction::MyDetectorConstruction() {
     // Define dimensions (half-lengths)
-    xWorld = 800*um;
-    yWorld = 800*um;
-    zWorld = 800*um;
+    xWorld = 10*cm;
+    yWorld = 10*cm;
+    zWorld = 10*cm;
 
-    xIce = 60*um;
+    xIce = 10*mm;
     yIce = 40*um;
-    zIce = 60*um;
+    zIce = 10*mm;
 
-    xTissue=120*um;
-	yTissue=120*um;
-	zTissue=120*um;
+    xTissue=10*mm;
+	yTissue=10*mm;
+	zTissue=10*mm;
 
-    xcell=120*um;
+    xcell=10*mm;
     ycell=0.15*um;
-    zcell=120*um;
+    zcell=10*mm;
 
     Voxel = 0.15*um; 
     margin = 0*nm;
@@ -47,9 +47,14 @@ void MyDetectorConstruction::DefineMaterials() {
 
     worldMat = nist->FindOrBuildMaterial("G4_AIR");
     // iceMat = nist->FindOrBuildMaterial("G4_WATER");  // Ice is modeled as water
-    iceMat = new G4Material("Ice", 0.92 * g/cm3, 2);
-    iceMat->AddElement(nist->FindOrBuildElement("H"), 2);
-    iceMat->AddElement(nist->FindOrBuildElement("O"), 1);
+    // iceMat = new G4Material("Ice", 0.92 * g/cm3, 2);
+    // iceMat->AddElement(nist->FindOrBuildElement("H"), 2);
+    // iceMat->AddElement(nist->FindOrBuildElement("O"), 1);
+    iceMat = new G4Material("C6H7NO2", 1.07*g/cm3, 4);//Cyanoacrylate Adhesive, the glue
+	iceMat->AddElement(nist->FindOrBuildElement("C"), 6);
+	iceMat->AddElement(nist->FindOrBuildElement("H"), 7);
+	iceMat->AddElement(nist->FindOrBuildElement("N"), 1);
+	iceMat->AddElement(nist->FindOrBuildElement("O"), 2);
     
     skinMat = nist->FindOrBuildMaterial("G4_WATER");
 
@@ -88,10 +93,10 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     logicCellUnder = new G4LogicalVolume(solidCellUnder, skinMat, "logicCellUnder");
 
     // Place the under cells
-    for (G4int i = 0; i < 25; ++i) {
+    for (G4int i = 0; i < 39; ++i) {
         G4double yOffset = -(i + 1) * 5 * um + yTissue;  // Adjust offset to place within Under Tissue
-        physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i+1, true);
-        G4cout << "copy = " << i+1 <<" offset = " <<yOffset << G4endl; 
+        physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i*-1, true);
+        G4cout << "copy under = " << i*-1 <<" offset = " <<yOffset/um << G4endl; 
 
     }
 
@@ -99,10 +104,10 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     solidCellUper = new G4Box("solidCellUper", xcell, ycell, zcell);
     logicCellUper = new G4LogicalVolume(solidCellUper, skinMat, "logicCellUper");
 
-   for (G4int i = 0; i < 25; ++i) {
+   for (G4int i = 0; i < 39; ++i) {
     G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
-    physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+100, true);
-    G4cout << "copy = " << i+100 <<" offset = " <<yOffset << G4endl; 
+    physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+1, true);
+    G4cout << "copy uper= " << i+1 <<" offset = " <<yOffset/um << G4endl; 
     }
 
 

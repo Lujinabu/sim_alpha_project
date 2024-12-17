@@ -36,8 +36,8 @@ void MyRunAction::BeginOfRunAction(const G4Run*) {
     man->CreateNtupleIColumn("parentParticleID");//11
     man->CreateNtupleDColumn("stepLength/nm");//12
     man->CreateNtupleDColumn("particleMomDirection_X");//13//post momentum direction of the particle
-	man->CreateNtupleDColumn("particleMomDirection_Y");//14
-	man->CreateNtupleDColumn("particleMomDirection_Z");//15
+	  man->CreateNtupleDColumn("particleMomDirection_Y");//14
+	  man->CreateNtupleDColumn("particleMomDirection_Z");//15
 
 
     man->FinishNtuple(0);
@@ -78,6 +78,10 @@ void MyRunAction::BeginOfRunAction(const G4Run*) {
 }
 
 void MyRunAction::EndOfRunAction(const G4Run*) {
+
+    // G4int numPrimaries = run->GetNumberOfEvent();
+    // G4double RnDesorptionIN = fpEventAction->getRnDesorptionIN();
+    // G4cout << "Desorption of Rn220 from is " << (1 - RnDesorptionIN / numPrimaries) * 100 << "%" << G4endl;
     G4AnalysisManager *man = G4AnalysisManager::Instance();
     const auto detConstruction = static_cast<const MyDetectorConstruction*>(
     G4RunManager::GetRunManager()->GetUserDetectorConstruction());

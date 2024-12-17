@@ -18,7 +18,7 @@ public:
 // private:
     MyEventAction* fEventAction;
 
-  std::ofstream PSfile_14Nov_100;
+  std::ofstream PSfile16_At211_4µm_5gab;
   void savePoint(const G4Track *track, const G4ThreeVector & newPos, const G4ThreeVector & boxMomentum, const G4int & copy, const G4double & particleEnergy, const G4double & time, const G4int & originParticle);
   G4ThreeVector transformDirection(const G4ThreeVector & position, const G4ThreeVector & worldMomentum);
   MyDetectorConstruction *fDetector;
@@ -38,7 +38,13 @@ public:
       {"Tl208", 8},
       {"Po212", 9},
       {"Pb208", 10},
-      {"e+", 11}
+      {"e+", 11},
+
+      {"At211", 12},
+      {"Po211", 13},
+      {"Bi207", 14},
+      {"Pb207", 15},
+
       };
 
   std::map<G4String, G4int> particleOriginMap{
@@ -69,7 +75,27 @@ public:
       {"gammaTl208", 24},
       {"gammaPo212", 25},
       {"gammaPb208", 26},
-      {"e+", 27}};
+      {"e+", 27},
+
+      {"At211", 28},
+      {"Po211", 29},
+      {"Bi207", 30},
+      {"Pb207", 31},
+      {"alphaAt211", 32},
+      {"alphaPo211", 33},
+      {"e-At211", 34},
+      {"e-Bi207", 35},
+      {"gammaAt211", 36},
+      {"gammaPo211", 37},
+      {"gammaBi207", 38},
+      {"gammaPb207", 39},
+
+
+
+
+
+      
+      };
 
   std::map<G4int, G4String> reverseParticleOriginMap{
       {0, "Ra224"},
@@ -80,6 +106,14 @@ public:
       {5, "Tl208"},
       {6, "Po212"},
       {7, "Pb208"},
+
+
+      {28, "At211"},
+      {29, "Po211"},
+      {30, "Bi207"},
+      {31, "Pb207"},
+
+
   };
 };
 

@@ -13,11 +13,14 @@ class MyEventAction : public G4UserEventAction{
 		MyEventAction(MyRunAction*);
 		~MyEventAction();
 
-		virtual void UpdateMap(G4int trackid, G4String parentName, G4int parenttrackID);
-		virtual G4String GetParentTrackParticleName(G4int trackid);
-		virtual G4int GetParentTrackID(G4int trackid);
+		// virtual void UpdateMap(G4int trackid, G4String parentName, G4int parenttrackID);
+		// virtual G4String GetParentTrackParticleName(G4int trackid);
+		// virtual G4int GetParentTrackID(G4int trackid);
 		virtual void BeginOfEventAction(const G4Event*);
 		virtual void EndOfEventAction(const G4Event*);
+		// void addRnDesorptionIN() { RnDesorptionIN++; }
+        // G4int getRnDesorptionIN() { return RnDesorptionIN; }
+
 		std::map<G4int, G4ThreeVector> particlePos;
         std::map<G4int, G4ThreeVector> particleDist;
         std::map<G4int, G4ThreeVector> decayPos;
@@ -26,8 +29,8 @@ class MyEventAction : public G4UserEventAction{
 	
 	// private:
 
-    		std::map<G4int, G4String> mapping_parentTrack;//track id, parent name
-    		std::map<G4int, G4int> mapping_parentID;//track id, parent track id
+    		// std::map<G4int, G4String> mapping_parentTrack;//track id, parent name
+    		// std::map<G4int, G4int> mapping_parentID;//track id, parent track id
 
 
 };

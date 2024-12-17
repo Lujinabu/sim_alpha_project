@@ -8,7 +8,7 @@ MyPhysicsList::MyPhysicsList(){
 	G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
    	stepLimitPhys->SetApplyToAll(true);
    	RegisterPhysics(stepLimitPhys);
-	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(5*eV, 1*GeV);
+	G4ProductionCutsTable::GetProductionCutsTable()->SetEnergyRange(100*eV, 1*GeV);
 	SetDefaultCutValue(1*nm); // This means particles will only be generated if they have enough energy to travel at least 1 nanometer before stopping.
 }
 MyPhysicsList::~MyPhysicsList(){}

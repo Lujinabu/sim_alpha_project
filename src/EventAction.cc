@@ -16,8 +16,8 @@ void MyEventAction::BeginOfEventAction(const G4Event*){
 void MyEventAction::EndOfEventAction(const G4Event*){
 	// mapping_parentTrack.erase(mapping_parentTrack.begin(), mapping_parentTrack.end());
 	// mapping_parentID.erase(mapping_parentID.begin(), mapping_parentID.end());
-    mapping_parentTrack.clear();
-    mapping_parentID.clear();
+    parentParticle.clear();
+    // mapping_parentID.clear();
 
     G4AnalysisManager *man=G4AnalysisManager::Instance();
 
@@ -51,31 +51,31 @@ void MyEventAction::EndOfEventAction(const G4Event*){
     
 }
 
-void MyEventAction::UpdateMap(G4int trackID, G4String parentName, G4int parenttrackID){
+// void MyEventAction::UpdateMap(G4int trackID, G4String parentName, G4int parenttrackID){
 	
-	//  mapping_parentTrack.insert(std::pair<G4int, G4String> (trackID, parentName));
-	//  mapping_parentID.insert(std::pair<G4int, G4int> (trackID, parenttrackID));
+// 	//  mapping_parentTrack.insert(std::pair<G4int, G4String> (trackID, parentName));
+// 	//  mapping_parentID.insert(std::pair<G4int, G4int> (trackID, parenttrackID));
 
-        if (G4StrUtil::contains(parentName, "[")) // to catch excited states
-      {
-        parentName = parentName.substr(0, 5);
-      }
-    mapping_parentTrack[trackID] = parentName;
-    mapping_parentID[trackID] = parenttrackID;
-}
+//         if (G4StrUtil::contains(parentName, "[")) // to catch excited states
+//       {
+//         parentName = parentName.substr(0, 5);
+//       }
+//     mapping_parentTrack[trackID] = parentName;
+//     mapping_parentID[trackID] = parenttrackID;
+// }
 
-G4String MyEventAction::GetParentTrackParticleName(G4int trackid){
- if (mapping_parentTrack.find(trackid) != mapping_parentTrack.end()) {
-        return mapping_parentTrack[trackid];
-	// return mapping_parentTrack[trackid];
+// G4String MyEventAction::GetParentTrackParticleName(G4int trackid){
+//  if (mapping_parentTrack.find(trackid) != mapping_parentTrack.end()) {
+//         return mapping_parentTrack[trackid];
+// 	// return mapping_parentTrack[trackid];
 
-   }
-    return "unknown";
-}
-G4int MyEventAction::GetParentTrackID(G4int trackid){
+//    }
+    // return "unknown";
+// }
+// G4int MyEventAction::GetParentTrackID(G4int trackid){
 
-   if (mapping_parentID.find(trackid) != mapping_parentID.end()) {
-        return mapping_parentID[trackid];
-    }
-    return -1;
-}
+//    if (mapping_parentID.find(trackid) != mapping_parentID.end()) {
+//         return mapping_parentID[trackid];
+//     }
+//     return -1;
+// }

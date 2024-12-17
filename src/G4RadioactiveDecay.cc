@@ -1476,172 +1476,49 @@ G4ThreeVector G4RadioactiveDecay::ChooseCollimationDirection() const
 
 G4ThreeVector G4RadioactiveDecay::calculateDiffusion(const G4double diffusionTime, const G4double Dwater, const G4Track &theTrack)
 {
-    // G4double tolerance = 1e-12; // tolerance for checking time for intersection with seed to avoid rounding errors
+    G4ThreeVector changePosition = G4ThreeVector(); // Default no movement
+    G4String currentVolume = theTrack.GetVolume()->GetName(); // Get current volume name
+    G4ThreeVector startPos = theTrack.GetPosition(); // Initial position
 
-    G4ThreeVector changePosition = G4ThreeVector();
-    G4String startVolume = theTrack.GetVolume()->GetName();
-
-    if (startVolume == "physIce")
+    // If the particle is already inside physIce, assume no diffusion
+    if (currentVolume == "physIce")
     {
-        // Assumed no diffusion in the ice so no change in position
+        // No diffusion in ice
         return changePosition;
     }
-    // generate random direction vector for the total diffusion
-    G4ThreeVector direction = G4ThreeVector(G4UniformRand() - 0.5, G4UniformRand() - 0.5, G4UniformRand() - 0.5);
+
+    // Define the bounds of physIce as per detector construction
+    G4double xIceHalf = 10 * mm; // Half-length of physIce in x
+    G4double yIceHalf = 40 * um; // Half-length of physIce in y
+    G4double zIceHalf = 10 * mm; // Half-length of physIce in z
+
+    G4ThreeVector physIceCenter(0, 0, 0); // Center of physIce in world coordinates
+
+    // Generate random diffusion direction
+    G4ThreeVector direction = G4ThreeVector(G4UniformRand() - 0.5, G4UniformRand() - 0.5, G4UniformRand() - 0.5).unit();
     direction = direction * 1 / direction.mag();
 
-    G4ThreeVector startPos = theTrack.GetPosition();
+    G4double distWaterDiff = abs(G4RandGauss::shoot(0, sqrt(6 * Dwater * diffusionTime / s))); // Diffusion distance
+    changePosition = distWaterDiff * direction;
 
-    // Check if the direction vector ever intersects with the seed
-    // G4double r = 0.15 * mm;
-    // G4double zMinMax = 3 * mm;
+    // Calculate the particle's new position after diffusion
+    G4ThreeVector newPosition = startPos + changePosition;
 
-    // G4double A = direction.x() * direction.x() + direction.y() * direction.y();
-    // G4double B = 2 * (startPos.x() * direction.x() + startPos.y() * direction.y());
-    // G4double C = startPos.x() * startPos.x() + startPos.y() * startPos.y() - r * r;
+    if (newPosition.y() >= -yIceHalf)
+    {
+        // Calculate the entry point
+        G4double distoenter = (-yIceHalf - startPos.y()) / direction.y();
+        G4ThreeVector entryPoint = startPos + direction * distoenter;
 
-    // else
-    // {
-    //     if ((B * B - 4 * A * C) < 0)
-    //     {
-            // The ray never intersects the cylinder (seed) therefore all of the diffusion occurs in the world volume
-            G4double distWaterDiff = abs(G4RandGauss::shoot(0, sqrt(6 * Dwater * diffusionTime / s)));
-            changePosition = distWaterDiff * direction;
+        // Set newPosition to the entry point
+        newPosition = entryPoint;
 
-            // G4cout << "Never crosses seed " << startVolume << G4endl;
-        // }
-        // else
-        // {
-        //     // The diffusion path starts in the world and possibly intersects the seed
-        //     // G4cout << "starts in world and might cross seed" << startVolume << G4endl;
+        // Update changePosition to reflect zero diffusion after entering physIce
+        changePosition = newPosition - startPos;
 
-        //     G4double distanceWater = abs(G4RandGauss::shoot(0, sqrt(6 * Dwater * diffusionTime / s)));
-
-        //     // option 1 it starts outside and stops inside
-        //     G4double tRadial1 = (-B + sqrt(B * B - 4 * A * C)) / (2 * A); // arb time to reach seed cyclinder side boundary
-        //     G4double tRadial2 = (-B - sqrt(B * B - 4 * A * C)) / (2 * A); // arb time to reach seed cyclinder side boundary
-        //     G4double tZmin = (-1 * zMinMax - startPos.z()) / direction.z();
-        //     G4double tZmax = (zMinMax - startPos.z()) / direction.z();
-
-        //     std::vector<G4double> possible;
-
-        //     if ((abs(tRadial1 * direction.z()+startPos.z()) < zMinMax) && (tRadial1 > tolerance))
-        //     {
-        //         possible.push_back(tRadial1);
-        //     }
-        //     if ((abs(tRadial2 * direction.z()+startPos.z()) < zMinMax) && (tRadial2 > tolerance))
-        //     {
-        //         possible.push_back(tRadial2);
-        //     }
-        //     if (((std::pow(tZmin * direction.x()+startPos.x(),2) + std::pow(tZmin * direction.y()+startPos.y(),2)) < r * r) && (tZmin > tolerance))
-        //     {
-        //         possible.push_back(tZmin);
-        //     }
-        //     if (((std::pow(tZmax * direction.x()+startPos.x(),2) + std::pow(tZmax * direction.y()+startPos.y(),2)) < r * r) && (tZmax > tolerance))
-        //     {
-        //         possible.push_back(tZmax);
-        //     }
-
-        //     if (possible.size()==0)
-        //     {
-        //     // The ray never intersects the cylinder (seed) therefore all of the diffusion occurs in the world volume
-        //     G4double distWaterDiff = abs(G4RandGauss::shoot(0, sqrt(6 * Dwater * diffusionTime / s)));
-        //     changePosition = distWaterDiff * direction;
-
-        //     // G4cout << "Never crosses seed " << startVolume << G4endl;
-        //     return changePosition;
-
-        //     }
-
-        //     G4double firstCrossTime = *std::min_element(possible.begin(), possible.end());
-
-        //     G4double firstCrossPointDistance = firstCrossTime * direction.mag();
-
-        //     if (distanceWater < firstCrossPointDistance)
-        //     {
-        //         // never reaches the seed
-        //         changePosition = distanceWater * direction;
-        //         // G4cout << "Never crosses seed stays in water" << startVolume << G4endl;
-        //     }
-        //     else
-        //     {
-        //         // does intersect the seed volume
-        //         // calculate the time remaining for diffusion after reaching the seed
-        //         // G4cout << "Diffusion would cross the seed" << G4endl;
-        //         G4double timeAtSurface = estimateTime(firstCrossPointDistance, Dwater);
-        //         G4double tRemain = diffusionTime - timeAtSurface;
-
-        //         if (tRemain<0)
-        //             G4cout << "tRemain can't be negative" << G4endl;
-        //         // define a new random direction to continue diffusion in worl volume
-
-        //         G4ThreeVector direction2 = G4ThreeVector(G4UniformRand() - 0.5, G4UniformRand() - 0.5, G4UniformRand() - 0.5);
-        //         direction2 = direction2 * 1 / direction2.mag();
-
-        //         G4ThreeVector position = startPos + firstCrossPointDistance * direction;
-        //         // G4cout << "New position before change in direction = " << position << G4endl;
-
-        //         // check new direction does not intersect the seed, otherwise pick a new one
-        //         A = direction2.x() * direction2.x() + direction2.y() * direction2.y();
-        //         B = 2 * (position.x() * direction2.x() + position.y() * direction2.y());
-        //         C = position.x() * position.x() + position.y() * position.y() - r * r;
-
-        //         G4bool crossSeed = true;
-
-        //         G4double distanceWater2 = abs(G4RandGauss::shoot(0, sqrt(6 * Dwater * tRemain / s)));
-
-        //         while (crossSeed)
-        //         {
-        //             if ((B * B - 4 * A * C) < 0) // does not intersect
-        //             {
-        //                 crossSeed = false;
-        //                 break;
-        //             }
-
-        //             G4double tRadial1 = (-B + sqrt(B * B - 4 * A * C)) / (2 * A); // arb time to reach seed cyclinder side boundary
-        //             G4double tRadial2 = (-B - sqrt(B * B - 4 * A * C)) / (2 * A); // arb time to reach seed cyclinder side boundary
-        //             G4double tZmin = (-1 * zMinMax - position.z()) / direction2.z();
-        //             G4double tZmax = (zMinMax - position.z()) / direction2.z();
-
-        //             std::vector<G4double> possible;
-
-        //             if ((abs(tRadial1 * direction2.z()+position.z()) < zMinMax) && (tRadial1 > tolerance))
-        //             {
-        //                 possible.push_back(tRadial1);
-        //             }
-        //             if ((abs(tRadial2 * direction2.z()+position.z()) < zMinMax) && (tRadial2 > tolerance))
-        //             {
-        //                 possible.push_back(tRadial2);
-        //             }
-        //             if ((std::pow(tZmin * direction2.x()+position.x(),2) + std::pow(tZmin * direction2.y() +position.y(),2) < r * r) && (tZmin > tolerance))
-        //             {
-        //                 possible.push_back(tZmin);
-        //             }
-        //             if ((std::pow(tZmax * direction2.x()+position.x(),2) + std::pow(tZmax * direction2.y() +position.y(),2) < r * r) && (tZmax > tolerance))
-        //             {
-        //                 possible.push_back(tZmax);
-        //             }
-        //             if (possible.size() == 0)
-        //             {
-        //                 // doesnt cross
-        //                 crossSeed = false;
-        //                 break;
-        //             }
-        //             else
-        //             {
-        //                 direction2 = G4ThreeVector(G4UniformRand() - 0.5, G4UniformRand() - 0.5, G4UniformRand() - 0.5);
-        //                 direction2 = direction2 * 1 / direction2.mag();
-        //                 A = direction2.x() * direction2.x() + direction2.y() * direction2.y();
-        //                 B = 2 * (position.x() * direction2.x() + position.y() * direction2.y());
-        //                 C = position.x() * position.x() + position.y() * position.y() - r * r;
-        //             }
-        //         }
-
-        //         changePosition = distanceWater2 * direction2 + distanceWater * direction * (diffusionTime - tRemain) / diffusionTime;
-        //         // G4cout << "change in position = " << changePosition << G4endl;
-        //     }
-        // }
-    // }
+        // Stop further diffusion
+        return changePosition;
+    }
 
     return changePosition;
 }
