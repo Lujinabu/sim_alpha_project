@@ -96,7 +96,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
     for (G4int i = 0; i < 39; ++i) {
         G4double yOffset = -(i + 1) * 5 * um + yTissue;  // Adjust offset to place within Under Tissue
         physiCellUnder = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUnder, "physiCellUnder", logicUnderTissue, false, i*-1, true);
-        G4cout << "copy under = " << i*-1 <<" offset = " <<yOffset/um << G4endl; 
+        // G4cout << "copy under = " << i*-1 <<" offset = " <<yOffset/um << G4endl; 
 
     }
 
@@ -107,7 +107,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct() {
    for (G4int i = 0; i < 39; ++i) {
     G4double yOffset = (i + 1) * 5 * um - yTissue;  // Adjust offset to place within Uper Tissue
     physiCellUper = new G4PVPlacement(0, G4ThreeVector(0, yOffset, 0), logicCellUper, "physiCellUper", logicUperTissue, false, i+1, true);
-    G4cout << "copy uper= " << i+1 <<" offset = " <<yOffset/um << G4endl; 
+    // G4cout << "copy uper= " << i+1 <<" offset = " <<yOffset/um << G4endl; 
     }
 
 

@@ -10,11 +10,11 @@ MySteppingAction::MySteppingAction(MyEventAction *eventAction)
 {
 
   fEventAction = eventAction;
-  G4String fileName{"PSfile16_At211_4µm_5gab.bin"};
+  G4String fileName{"PSfile18Dec.bin"};
 
-  PSfile16_At211_4µm_5gab.open(fileName, std::ios::out | std::ios::binary);
+  PSfile18Dec.open(fileName, std::ios::out | std::ios::binary);
 }
-MySteppingAction::~MySteppingAction() { PSfile16_At211_4µm_5gab.close(); }
+MySteppingAction::~MySteppingAction() { PSfile18Dec.close(); }
 
 void MySteppingAction::UserSteppingAction(const G4Step *step)
 {
@@ -26,13 +26,14 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
   G4ParticleDefinition *particleType = track->GetDefinition();
   G4int TrackID = step->GetTrack()->GetTrackID();
 
-  if (particleName == "nu_e")
+  if (particleName == "nu_e" ||particleName == "anti_nu_e")// ||particleName == "anti_nu_e"
     return;
-
+    // check the Primary Particle) and give it a neame from the particleOriginMap 
   if ((fEventAction->parentParticle.find(TrackID) == fEventAction->parentParticle.end()) && (step->GetTrack()->GetCreatorProcess() == nullptr))
-fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));
-G4cout << TrackID << G4endl;
-G4cout << particleName << G4endl;
+   fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));
+// G4cout << "TrackID   "<< TrackID << particleName << G4endl;
+// G4cout << particleName << G4endl;
+  // if is the TrackID  is in the map or not and if it is Secondary Particle have a mothr particle 
   if ((fEventAction->parentParticle.find(TrackID) == fEventAction->parentParticle.end()) && (step->GetTrack()->GetCreatorProcess() != nullptr))
   {
     // track ID not found, save to map, trackID: creator particle from decay (e-,alpha, gamma) for split of DNA damage by source
@@ -40,7 +41,8 @@ G4cout << particleName << G4endl;
     {
       if (G4StrUtil::contains(particleName, "[")) // to catch excited states
       {
-        fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));// what that for 
+        // The purpose of this line is to add the current particle to the parentParticle map with its TrackID and the appropriate value from particleOriginMap based on the particle name.
+        fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[particleName.substr(0, 5)]));//particleOriginMap[particleName.substr(0, 5)]<<G4endl; the ID in the map 
         // G4cout<<"1"<<G4endl;
         // G4cout<<"particleName  "<< particleName << " " << particleOriginMap[particleName.substr(0, 5)]<<G4endl;
 
@@ -52,7 +54,7 @@ G4cout << particleName << G4endl;
 
         //  G4cout<<"copyPos uper  "<< copyPos.y()/mm<<"worldPos  " << worldPos.y()/mm << G4endl;
         // G4cout<<"2"<<G4endl;
-        // G4cout<<"combinedName  "<< particleName + parentName<<G4endl;
+        // G4cout<< "TrackID=  "  << TrackID <<"  combinedName  "<<  particleName + parentName  <<  "  step->GetTrack()->GetParentID()  "  <<   step->GetTrack()->GetParentID()  <<G4endl;
         // G4cout << "fEventAction->parentParticle[step->GetTrack()->GetParentID()] " << fEventAction->parentParticle[step->GetTrack()->GetParentID()] <<G4endl;
         // G4cout<<"step->GetTrack()->GetParentID()  "<<  step->GetTrack()->GetParentID()<<G4endl;
         fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, particleOriginMap[combinedName]));
@@ -63,6 +65,8 @@ G4cout << particleName << G4endl;
         // G4cout<<"3"<<G4endl;
 
         // G4cout<<"particleName  "<< particleName << " " << particleOriginMap[particleName.substr(0, 5)]<<G4endl;
+      // G4cout<<"  GetProcessName()   "<<  step->GetTrack()->GetCreatorProcess()->GetProcessName() <<" parentParticle  " <<  particleOriginMap[particleName.substr(0, 5)] <<"particleName  "<< particleName << "  TrackID   "<<TrackID<<G4endl;
+
 
       }
     }
@@ -72,6 +76,8 @@ G4cout << particleName << G4endl;
       G4int parentParticle = fEventAction->parentParticle[step->GetTrack()->GetParentID()];
       // add current track with parent particle
       fEventAction->parentParticle.insert(std::pair<G4int, G4int>(TrackID, parentParticle));
+      // G4cout<<"  parentParticle   "<< parentParticle <<G4endl;
+      // G4cout<<"  GetProcessName(44444444 )   "<<  step->GetTrack()->GetCreatorProcess()->GetProcessName() <<" parentParticle  " <<  parentParticle << "  TrackID   "<<TrackID<<G4endl;
     }
   }
 
@@ -454,11 +460,13 @@ void MySteppingAction::savePoint(const G4Track *track, const G4ThreeVector &newP
   output[10] = time / s;
   output[11] = originParticle;
 
-  PSfile16_At211_4µm_5gab.write((char *)&output, sizeof(output));
+  PSfile18Dec.write((char *)&output, sizeof(output));
   fEventAction->tracks.push_back(track->GetTrackID());
   // if (particleID == 32){
   //  G4cout<<" originParticle "<<originParticle<<" eventID  "<< eventID<<" newPos.y() "<< newPos.y()/ mm<<" particleEnergy / MeV"<<particleEnergy / MeV<<G4endl;
   // }
+  // G4cout << particleName << " with KE = " << particleEnergy  << " originParticle " << originParticle << " particleID " << particleID << " TracKID = " << track->GetTrackID() << G4endl;
+
   // G4cout << particleName << " saved at = " << newPos / mm << " with KE = " << particleEnergy << " with momentum " << boxMomentum << " TracKID = " << track->GetTrackID() << " originParticle " << originParticle << " copy " << copy << G4endl;
 }
 
